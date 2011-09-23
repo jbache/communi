@@ -1,0 +1,13 @@
+[Icon Theme]
+_Name=Tango
+_Comment=Tango Icon Theme
+Inherits=gnome,crystalsvg
+Example=x-directory-normal
+
+# Directory list
+Directories=32x32
+
+[32x32]
+Size=32
+Context=Actions
+Type=Fixed

@@ -14,7 +14,6 @@
 
 import QtQuick 1.0
 import QtDesktop 0.1
-import Communi.examples 1.0
 
 Tab {
     id: tab
@@ -22,7 +21,7 @@ Tab {
     signal sendMessage(string receiver, string message)
 
     function receiveMessage(message) {
-        textArea.text += formatter.formatMessage(message);
+        textArea.append(MessageFormatter.formatMessage(message));
         textArea.verticalValue = textArea.contentHeight;
     }
 
@@ -34,12 +33,12 @@ Tab {
         // TODO
     }
 
-    MessageFormatter {
-        id: formatter
-    }
-
     Column {
         anchors.fill: parent
+        anchors.margins: 10
+        anchors.topMargin: 8
+        spacing: 6
+
         TextArea {
             id: textArea
             readOnly: true
@@ -47,6 +46,7 @@ Tab {
             width: parent.width
             height: parent.height - textField.height
             horizontalScrollBar.visible: false
+            activeFocusOnPress: false
         }
         TextField {
             id: textField

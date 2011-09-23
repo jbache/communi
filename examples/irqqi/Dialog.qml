@@ -19,7 +19,7 @@ Window {
     id: dialog
 
     width: 1.5 * column.width
-    height: 2.0 * column.height
+    height: 1.5 * column.height
 
     property alias host: hostField.text
     property alias name: nameField.text
@@ -36,21 +36,37 @@ Window {
             spacing: 6
 
             Text { text: qsTr("Host:") }
+
             TextField {
                 id: hostField
                 text: "irc.freenode.net"
+                KeyNavigation.tab: nameField
+                Component.onCompleted: forceActiveFocus()
             }
 
             Text { text: qsTr("Name:") }
-            TextField { id: nameField }
+            TextField { id: nameField ; KeyNavigation.tab: closebutton}
+            Item { height: 30; width: 30}
         }
-
+    }
+    Row {
+        spacing: 6
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.margins: 10
+        anchors.bottomMargin: 6
         Button {
-            id: button
+            id: closebutton
+            text: qsTr("Quit")
+            onClicked: Qt.quit()
+            KeyNavigation.tab: connectbutton
+        }
+        Button {
+            id: connectbutton
             text: qsTr("Connect")
             enabled: dialog.host.length && dialog.name.length
-            anchors.right: parent.right
             onClicked: dialog.connect()
+            defaultbutton: true
         }
     }
 }

@@ -24,12 +24,17 @@ QML_DECLARE_TYPE(MessageHandler)
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
-
+    QIcon::setThemeName("Tango");
+    QStringList paths;
+    paths << "/Users/jens/git/communi/examples/irqqi/images";
+    QIcon::setThemeSearchPaths(paths);
     QDeclarativeView view;
+
     QDeclarativeContext* context = view.engine()->rootContext();
     CommandParser parser;
+    MessageFormatter formatter;
     context->setContextProperty("CommandParser", &parser);
-    qmlRegisterType<MessageFormatter>("Communi.examples", 1, 0, "MessageFormatter");
+    context->setContextProperty("MessageFormatter", &formatter);
     qmlRegisterType<MessageHandler>("Communi.examples", 1, 0, "MessageHandler");
 
     app.connect(view.engine(), SIGNAL(quit()), SLOT(quit()));

@@ -17,74 +17,140 @@ import QtDesktop 0.1
 import Communi 1.0
 import Communi.examples 1.0
 
-Window {
-    id: window
-    width: 640
-    height: 480
+Item {
+    // An empty item will suppress the QML Viewer
+    Window {
+        id: window
+        width: 640
+        height: 480
 
-    Dialog {
-        id: dialog
-        modal: true
-        onConnect: {
-            mainPage.title = dialog.host;
-            session.host = dialog.host;
-            session.userName = dialog.name;
-            session.nickName = dialog.name;
-            session.realName = dialog.name;
-            session.open();
-            dialog.visible = false;
+        visible: true
+
+        ToolBar {
+            id: toolbar
+            height: 40
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            Row {
+                anchors.left: parent.left
+                ToolButton {
+                    iconName: "list-add"
+                }
+                ToolButton {
+                    iconName: "list-remove"
+                }
+                ToolButton {
+                    iconName: "help-browser"
+                }
+                ToolButton {
+                    iconName: "preferences-system"
+                    onClicked: settingsDialog.visible = true
+                }
+            }
         }
-    }
-    Component.onCompleted: dialog.visible = true;
 
-    TabFrame {
-        id: tabFrame
-        anchors.fill: parent
-        tabBar: TabBar { }
-
-        Page {
-            id: mainPage
-            title: qsTr("Home")
-            onSendMessage: session.sendMessage(receiver, message)
+        Dialog {
+            id: dialog
+            modal: true
+            host: "irc.lnx.nokia.com"
+            onConnect: {
+                mainPage.title = dialog.host;
+                session.host = dialog.host;
+                session.userName = dialog.name;
+                session.nickName = dialog.name;
+                session.realName = dialog.name;
+                session.open();
+                dialog.visible = false;
+            }
         }
-    }
+        Window {
+            id: settingsDialog
 
-    Component {
-        id: pageComponent
-        Page { }
-    }
+            width: 300
+            height: 200
+            modal: true
 
-    MessageHandler {
-        id: handler
-        qml: true
-        session: session
-        currentReceiver: tabFrame.count ? tabFrame.tabs[tabFrame.current] : null
-        defaultReceiver: mainPage
-        onReceiverToBeAdded: {
-            tabFrame.addTab(pageComponent);
-            var page = tabFrame.tabs[tabFrame.count-1];
-            page.sendMessage.connect(session.sendMessage);
-            page.title = name;
-            handler.addReceiver(name, page);
+            minimumWidth:  width
+            minimumHeight: height
+            maximumWidth:  width
+            maximumHeight: height
+
+            GroupBox {
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: closebutton.top
+                anchors.margins: 8
+                title: "Settings"
+            }
+
+            Button {
+                id: closebutton
+                text: "Close"
+                anchors.margins: 8
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                onClicked: settingsDialog.visible = false
+            }
         }
-        onReceiverToBeRemoved: {
-            var page = handler.getReceiver(name);
-            tabFrame.current -= 1;
-            page.destroy();
+
+        Component.onCompleted: dialog.visible = true;
+
+        TabFrame {
+            id: tabFrame
+            anchors.top: toolbar.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: 8
+            tabBar: TabBar { }
+
+            Page {
+                id: mainPage
+                anchors.fill: parent
+                title: qsTr("Home")
+                onSendMessage: session.sendMessage(receiver, message)
+            }
         }
-    }
 
-    IrcSession {
-        id: session
+        Component {
+            id: pageComponent
+            Page { }
+        }
 
-        onConnecting: console.log("connecting...")
-        onConnected: console.log("connected...")
-        onDisconnected: Qt.quit();
+        MessageHandler {
+            id: handler
+            qml: true
+            session: session
+            currentReceiver: tabFrame.count ? tabFrame.tabs[tabFrame.current] : null
+            defaultReceiver: mainPage
+            onReceiverToBeAdded: {
+                tabFrame.addTab(pageComponent);
+                var page = tabFrame.tabs[tabFrame.count-1];
+                page.sendMessage.connect(session.sendMessage);
+                page.title = name;
+                handler.addReceiver(name, page);
+            }
+            onReceiverToBeRemoved: {
+                var page = handler.getReceiver(name);
+                tabFrame.current -= 1;
+                page.destroy();
+            }
+        }
 
-        function sendMessage(receiver, message) {
-            var cmd = CommandParser.parseCommand(receiver, message);
-            if (cmd)
-                session.sendCommand(cmd);
+        IrcSession {
+            id: session
+
+            onConnecting: console.log("connecting...")
+            onConnected: console.log("connected...")
+            onDisconnected: Qt.quit();
+
+            function sendMessage(receiver, message) {
+                var cmd = CommandParser.parseCommand(receiver, message);
+                if (cmd)
+                    session.sendCommand(cmd);
+            }
         }
     }
 }
