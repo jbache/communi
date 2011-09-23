@@ -37,7 +37,7 @@
 
     IrcSession provides means to establish a connection to an IRC server.
 
-    IrcSession works asynchronously ie. it is non-blocking, emitting signals
+    IrcSession works asynchronously ie. it is non-blocking, emiotting signals
     to notify when the state of connection changes or data has arrived. The
     asynchronous approach depends on an event loop. See QCoreApplication::exec()
     for more details.

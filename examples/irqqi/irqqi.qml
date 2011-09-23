@@ -26,6 +26,7 @@ Item {
 
         visible: true
 
+
         ToolBar {
             id: toolbar
             height: 40
@@ -96,24 +97,42 @@ Item {
         }
 
         Component.onCompleted: dialog.visible = true;
-
-        TabFrame {
-            id: tabFrame
-            anchors.top: toolbar.bottom
+        SplitterRow {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            anchors.margins: 8
-            tabBar: TabBar { }
+            anchors.top: toolbar.bottom
 
-            Page {
-                id: mainPage
-                anchors.fill: parent
-                title: qsTr("Home")
-                onSendMessage: session.sendMessage(receiver, message)
+            TextArea {
+                id: channellist
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: 200
+                frame: false
+                color: "#f4f4ff"
+                activeFocusOnPress: false
+                text: "Test\nTest2"
             }
-        }
 
+            Item {
+                TabFrame {
+                    id: tabFrame
+
+                    anchors.fill: parent
+                    anchors.margins: 9
+                    frame: false
+
+                    Page {
+                        id: mainPage
+                        anchors.fill: parent
+                        title: qsTr("Home")
+                        onSendMessage: session.sendMessage(receiver, message)
+                    }
+                }
+            }
+
+
+        }
         Component {
             id: pageComponent
             Page { }

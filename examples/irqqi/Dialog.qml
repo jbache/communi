@@ -51,14 +51,16 @@ Window {
     }
     Row {
         spacing: 6
-        anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
+        anchors.right: parent.right
         anchors.margins: 10
         anchors.bottomMargin: 6
         Button {
             id: closebutton
             text: qsTr("Quit")
             onClicked: Qt.quit()
+
+            width:100
             KeyNavigation.tab: connectbutton
         }
         Button {
@@ -66,6 +68,7 @@ Window {
             text: qsTr("Connect")
             enabled: dialog.host.length && dialog.name.length
             onClicked: dialog.connect()
+            width:100
             defaultbutton: true
         }
     }
